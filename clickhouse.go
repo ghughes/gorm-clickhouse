@@ -5,9 +5,10 @@ import (
 	"database/sql"
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 
-	_ "github.com/ClickHouse/clickhouse-go"
+	_ "github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/hashicorp/go-version"
 	"gorm.io/gorm"
 	"gorm.io/gorm/callbacks"
@@ -191,8 +192,9 @@ func (dialector Dialector) Migrator(db *gorm.DB) gorm.Migrator {
 	return Migrator{
 		Migrator: migrator.Migrator{
 			Config: migrator.Config{
-				DB:        db,
-				Dialector: dialector,
+				DB:                          db,
+				Dialector:                   dialector,
+				CreateIndexAfterCreateTable: true,
 			},
 		},
 		Dialector: dialector,
@@ -254,7 +256,8 @@ func (dialector Dialector) DefaultValueOf(field *schema.Field) clause.Expression
 }
 
 func (dialector Dialector) BindVarTo(writer clause.Writer, stmt *gorm.Statement, v interface{}) {
-	writer.WriteByte('?')
+	writer.WriteByte('$')
+	writer.WriteString(strconv.Itoa(len(stmt.Vars)))
 }
 
 func (dialector Dialector) QuoteTo(writer clause.Writer, str string) {

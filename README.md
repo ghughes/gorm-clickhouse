@@ -22,7 +22,7 @@ type User struct {
 }
 
 func main() {
-	dsn := "tcp://localhost:9000?database=gorm&username=gorm&password=gorm&read_timeout=10&write_timeout=20"
+	dsn := "tcp://gorm:gorm@localhost:9000/gorm"
 	db, err := gorm.Open(clickhouse.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
@@ -63,7 +63,7 @@ import (
 )
 
 // refer to https://github.com/ClickHouse/clickhouse-go
-var dsn = "tcp://localhost:9000?database=gorm&username=gorm&password=gorm&read_timeout=10&write_timeout=20"
+var dsn = "tcp://gorm:gorm@localhost:9000/gorm"
 
 func main() {
   db, err := gorm.Open(clickhouse.New(click.Config{
